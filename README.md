@@ -20,7 +20,6 @@ It combines **BM25 keyword search**, **dense embeddings (SBERT)**, **hybrid retr
 
 ## Project Structure
 
-
 RAG/
 ├─ src/           # FastAPI app, services, clients
 ├─ notebooks/     # Exploration & demo notebooks
@@ -31,4 +30,5 @@ RAG/
 ├─ pyproject.toml
 ├─ .env.example
 └─ README.md
+
 
