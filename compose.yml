@@ -1,0 +1,56 @@
+services:
+  api:
+    build: .
+    env_file: .env
+    ports: ["8000:8000"]
+    depends_on: [postgres, opensearch, redis, ollama]
+    command: ["uvicorn","src.main:app","--host","0.0.0.0","--port","8000"]
+
+  gradio:
+    build: .
+    env_file: .env
+    ports: ["7861:7861"]
+    command: ["python","-m","src.routers.gradio_ui"]
+    depends_on: [api]
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DB}
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+
+  opensearch:
+    image: opensearchproject/opensearch:2.13.0
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - bootstrap.memory_lock=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+    ports: ["9200:9200","5601:5601"]
+
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+
+  airflow:
+    image: apache/airflow:2.9.3
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    ports: ["8080:8080"]
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - airflowdata:/opt/airflow
+
+  ollama:
+    image: ollama/ollama:latest
+    ports: ["11434:11434"]
+    volumes:
+      - ollamadata:/root/.ollama
+
+volumes:
+  pgdata:
+  airflowdata:
+  ollamadata:
