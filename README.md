@@ -18,7 +18,8 @@ It combines **BM25 keyword search**, **dense embeddings (SBERT)**, **hybrid retr
 
 
 
-## Project Structure | Structure du projet
+## Project Structure
+
 
 RAG/
 ├─ src/           # FastAPI app, services, clients
